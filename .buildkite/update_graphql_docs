@@ -1,0 +1,28 @@
+#!/bin/bash
+set -euo pipefail
+
+echo "+++ Configure git"
+git config user.email $GIT_EMAIL
+git config user.name $GIT_NAME
+
+echo "+++ Generate GraphQL docs"
+./scripts/generate-graphql-api-content.sh
+
+echo "+++ Check for changes"
+# BRANCH=buildkite-docs-bot/graphql/$(git rev-parse --short :data/graphql_data_schema.json)
+BRANCH=buildkite-docs-bot/graphql/$(date +%s)
+
+echo "--- Commit and push changes"
+git checkout -b $BRANCH
+git add .
+git commit -m "Update GraphQL docs" --allow-empty # fixme: this is temporary, until we have a schema change
+# git commit -m "Update GraphQL docs"
+
+echo "+++ Push changes"
+git push -u origin $BRANCH
+
+echo "+++ Create pull request"
+gh pr create \
+  --title "Update GraphQL docs" \
+  --body "This is an automated PR based on the current GraphQL schema"
+
