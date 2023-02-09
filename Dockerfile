@@ -1,4 +1,6 @@
-FROM public.ecr.aws/docker/library/ruby:2.7.5-buster@sha256:d76f1c822df854ecc6a983c63be3bd2e5854a6b47a3cdd140664953877d91651
+FROM public.ecr.aws/docker/library/ruby:2.7.5-buster@sha256:d76f1c822df854ecc6a983c63be3bd2e5854a6b47a3cdd140664953877d91651 as base
+
+WORKDIR /app
 
 ARG RAILS_ENV
 ENV RAILS_ENV=${RAILS_ENV:-production}
@@ -30,15 +32,14 @@ RUN echo "--- :package: Installing system deps" \
     # clean up
     && rm -rf /tmp/*
 
-WORKDIR /app
-
-# Install deps
+FROM base as gems
 COPY Gemfile Gemfile.lock .ruby-version ./
 RUN echo "--- :bundler: Installing ruby gems" \
     && bundle config set --local without "$([ "$RAILS_ENV" = "production" ] && echo 'development test')" \
     && bundle config set force_ruby_platform true \
     && bundle install --jobs $(nproc) --retry 3
 
+FROM gems as app
 COPY package.json package-lock.json ./
 RUN echo "--- :npm: Installing npm deps" \
     && npm ci
