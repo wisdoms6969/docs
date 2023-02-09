@@ -6,6 +6,7 @@ steps:
           run: app
           mount-ssh-agent: true
           env:
+            - API_ACCESS_TOKEN
             - GIT_NAME
             - GIT_EMAIL
             - GH_TOKEN

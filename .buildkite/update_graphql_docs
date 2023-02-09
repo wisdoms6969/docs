@@ -1,9 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "+++ Configure git"
-git config user.email $GIT_EMAIL
-git config user.name $GIT_NAME
+echo "+++ Fetch latest GraphQL schema"
+rake graphql:fetch_schema > data/graphql_data_schema.json
 
 echo "+++ Generate GraphQL docs"
 ./scripts/generate-graphql-api-content.sh
@@ -13,10 +12,11 @@ echo "+++ Check for changes"
 BRANCH=buildkite-docs-bot/graphql/$(date +%s)
 
 echo "--- Commit and push changes"
+git config user.email $GIT_EMAIL
+git config user.name $GIT_NAME
 git checkout -b $BRANCH
 git add .
-git commit -m "Update GraphQL docs" --allow-empty # fixme: this is temporary, until we have a schema change
-# git commit -m "Update GraphQL docs"
+git commit -m "Update GraphQL docs"
 
 echo "+++ Push changes"
 git push -u origin $BRANCH
