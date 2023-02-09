@@ -21,8 +21,8 @@ git commit -m "Update GraphQL docs" --allow-empty # fixme: this is temporary, un
 echo "+++ Push changes"
 git push -u origin $BRANCH
 
-echo "+++ Create pull request"
-gh pr create \
-  --title "Update GraphQL docs" \
-  --body "This is an automated PR based on the current GraphQL schema"
+# echo "+++ Create pull request"
+# gh pr create \
+#   --title "Update GraphQL docs" \
+#   --body "This is an automated PR based on the current GraphQL schema"
 
