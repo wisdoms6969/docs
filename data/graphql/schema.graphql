@@ -7287,7 +7287,7 @@ input PipelineTemplateCreateInput {
   """
   If the pipeline template is available for assignment by non admin users
   """
-  available: Boolean
+  available: Boolean = false
 
   """
   A unique identifier for the client performing the mutation.
@@ -7768,7 +7768,7 @@ type Query {
     """
     The UUID of the pipeline template
     """
-    uuid: ID
+    uuid: ID!
   ): PipelineTemplate
 
   """
